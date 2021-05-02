@@ -12,7 +12,7 @@ void test_pe<T extends pefile.PeFileBase>(String path) {
   expect(pe.header_data.entry_point_rva, isNotNull);
   expect(pe.header_data.entry_point_rva, isPositive);
 
-  expect(pe.sections, isPositive);
+  expect(pe.sections.length, isPositive);
   for (var section in pe.sections) {
     expect(section.name, isNotNull);
     expect(section.name, isNotEmpty);
