@@ -1,7 +1,5 @@
 import 'dart:ffi';
 
-const int IMAGE_DOS_SIGNATURE = 0x5A4D; // MZ
-
 class IMAGE_DOS_HEADER extends Struct {
   @Uint16() external int e_magic;
   @Uint16() external int e_cblp;
