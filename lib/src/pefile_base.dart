@@ -30,7 +30,8 @@ class HeaderData {
   final int _subsystem;
   final int _dll_characteristics;
 
-  HeaderData(this._image_base, this._image_size, this._header_size, this._entry_point_rva, this._subsystem, this._dll_characteristics);
+  HeaderData(this._image_base, this._image_size, this._header_size,
+      this._entry_point_rva, this._subsystem, this._dll_characteristics);
 
   int get image_base => _image_base;
   int get image_size => _image_size;
@@ -48,7 +49,8 @@ class Section {
   final int _pointer_to_raw_data;
   final int _characteristics;
 
-  Section(this._name, this._virtual_size, this._virtual_address, this._size_of_raw_data, this._pointer_to_raw_data, this._characteristics);
+  Section(this._name, this._virtual_size, this._virtual_address,
+      this._size_of_raw_data, this._pointer_to_raw_data, this._characteristics);
 
   String get name => _name;
   int get virtual_size => _virtual_size;
@@ -58,22 +60,27 @@ class Section {
   int get characteristics => _characteristics;
 
   bool get isCodeSection => (_characteristics & IMAGE_SCN_CNT_CODE) == 1;
-  bool get isDataSection => (_characteristics & IMAGE_SCN_CNT_INITIALIZED_DATA) == 1 || (_characteristics & IMAGE_SCN_CNT_UNINITIALIZED_DATA) == 1;
+  bool get isDataSection =>
+      (_characteristics & IMAGE_SCN_CNT_INITIALIZED_DATA) == 1 ||
+      (_characteristics & IMAGE_SCN_CNT_UNINITIALIZED_DATA) == 1;
 
-  bool containsRva(int rva) => rva >= _virtual_address && rva < (_virtual_address + (_virtual_size == 0 ? _size_of_raw_data : _virtual_size));
-  bool containsFileOffset(int file_offset) => file_offset >= _pointer_to_raw_data && file_offset < (_pointer_to_raw_data + (_size_of_raw_data == 0 ? _virtual_size : _size_of_raw_data));
+  bool containsRva(int rva) =>
+      rva >= _virtual_address &&
+      rva <
+          (_virtual_address +
+              (_virtual_size == 0 ? _size_of_raw_data : _virtual_size));
+  bool containsFileOffset(int file_offset) =>
+      file_offset >= _pointer_to_raw_data &&
+      file_offset <
+          (_pointer_to_raw_data +
+              (_size_of_raw_data == 0 ? _virtual_size : _size_of_raw_data));
 }
 
-class Import {
+class Import {}
 
-}
-
-class Export {
-
-}
+class Export {}
 
 class PeFileBase implements IDisposable {
-
   late Pointer<Uint8> _buffer;
   late int _size;
 
@@ -102,7 +109,12 @@ class PeFileBase implements IDisposable {
   Uint8List get buffer => _buffer.asTypedList(_size);
 
   bool get is64bit {
-    var magic = _buffer.elementAt(dos_header.e_lfanew).cast<IMAGE_NT_HEADERS32>().ref.OptionalHeader.Magic;
+    var magic = _buffer
+        .elementAt(dos_header.e_lfanew)
+        .cast<IMAGE_NT_HEADERS32>()
+        .ref
+        .OptionalHeader
+        .Magic;
 
     if (magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC) {
       return false;
@@ -130,41 +142,48 @@ class PeFileBase implements IDisposable {
   List<Import> get imports => _imports;
 
   int rvaToFileOffset(int rva) {
-    var section = _sections.firstWhere((section) => section.containsRva(rva), orElse: () => throw PeFileException('No section contains rva : $rva'));
+    var section = _sections.firstWhere((section) => section.containsRva(rva),
+        orElse: () => throw PeFileException('No section contains rva : $rva'));
     return (rva - section.virtual_address) + section.pointer_to_raw_data;
   }
 
   int fileOffsetToRva(int file_offset) {
-    var section = _sections.firstWhere((section) => section.containsFileOffset(file_offset), orElse: () => throw PeFileException('No section contains file offset : $file_offset'));
-    return (file_offset + section.virtual_address) - section.pointer_to_raw_data;
+    var section = _sections.firstWhere(
+        (section) => section.containsFileOffset(file_offset),
+        orElse: () => throw PeFileException(
+            'No section contains file offset : $file_offset'));
+    return (file_offset + section.virtual_address) -
+        section.pointer_to_raw_data;
   }
 }
 
-List<Section> _parseSectionImpl(Pointer<Uint8> buffer, int nt_hdr_offset, int nt_hdr_size, int num_sections, List<Section> sections) {
-  var sections_it = buffer.elementAt(nt_hdr_offset + sizeOf<IMAGE_FILE_HEADER>() + 4 + nt_hdr_size).cast<IMAGE_SECTION_HEADER>();
+List<Section> _parseSectionImpl(Pointer<Uint8> buffer, int nt_hdr_offset,
+    int nt_hdr_size, int num_sections, List<Section> sections) {
+  var sections_it = buffer
+      .elementAt(nt_hdr_offset + sizeOf<IMAGE_FILE_HEADER>() + 4 + nt_hdr_size)
+      .cast<IMAGE_SECTION_HEADER>();
 
   for (var i = 0; i < num_sections; i++) {
     var section = sections_it.elementAt(i);
     sections.add(Section(
-      section.szName,
-      section.ref.VirtualSize,
-      section.ref.VirtualAddress,
-      section.ref.SizeOfRawData,
-      section.ref.PointerToRawData,
-      section.ref.Characteristics
-    ));
+        section.szName,
+        section.ref.VirtualSize,
+        section.ref.VirtualAddress,
+        section.ref.SizeOfRawData,
+        section.ref.PointerToRawData,
+        section.ref.Characteristics));
   }
 
   return sections;
 }
 
 class PeFile32 extends PeFileBase {
-
   PeFile32(Uint8List data) : super(data);
 
   @override
   IMAGE_NT_HEADERS32 get nt_headers {
-    var pNtHdrs = _buffer.elementAt(dos_header.e_lfanew).cast<IMAGE_NT_HEADERS32>();
+    var pNtHdrs =
+        _buffer.elementAt(dos_header.e_lfanew).cast<IMAGE_NT_HEADERS32>();
     if (pNtHdrs.ref.Signature != IMAGE_NT_SIGNATURE) {
       throw PeFileException('Invalid NT signature');
     }
@@ -177,17 +196,23 @@ class PeFile32 extends PeFileBase {
     var opt_hdr = nt_headers.OptionalHeader;
 
     return HeaderData(
-      opt_hdr.ImageBase,
-      opt_hdr.SizeOfImage,
-      opt_hdr.SizeOfHeaders,
-      opt_hdr.AddressOfEntryPoint,
-      opt_hdr.Subsystem,
-      opt_hdr.DllCharacteristics
-    );
+        opt_hdr.ImageBase,
+        opt_hdr.SizeOfImage,
+        opt_hdr.SizeOfHeaders,
+        opt_hdr.AddressOfEntryPoint,
+        opt_hdr.Subsystem,
+        opt_hdr.DllCharacteristics);
   }
 
   @override
-  List<Section> get sections => _sections.isEmpty ? _parseSectionImpl(_buffer, dos_header.e_lfanew, nt_headers.FileHeader.SizeOfOptionalHeader, nt_headers.FileHeader.NumberOfSections, _sections) : _sections;
+  List<Section> get sections => _sections.isEmpty
+      ? _parseSectionImpl(
+          _buffer,
+          dos_header.e_lfanew,
+          nt_headers.FileHeader.SizeOfOptionalHeader,
+          nt_headers.FileHeader.NumberOfSections,
+          _sections)
+      : _sections;
 
   @override
   List<Export> get exports => throw UnimplementedError();
@@ -197,12 +222,12 @@ class PeFile32 extends PeFileBase {
 }
 
 class PeFile64 extends PeFileBase {
-
   PeFile64(Uint8List data) : super(data);
 
   @override
   IMAGE_NT_HEADERS64 get nt_headers {
-    var pNtHdrs = _buffer.elementAt(dos_header.e_lfanew).cast<IMAGE_NT_HEADERS64>();
+    var pNtHdrs =
+        _buffer.elementAt(dos_header.e_lfanew).cast<IMAGE_NT_HEADERS64>();
     if (pNtHdrs.ref.Signature != IMAGE_NT_SIGNATURE) {
       throw PeFileException('Invalid NT signature');
     }
@@ -215,23 +240,29 @@ class PeFile64 extends PeFileBase {
     var opt_hdr = nt_headers.OptionalHeader;
 
     return HeaderData(
-      opt_hdr.ImageBase,
-      opt_hdr.SizeOfImage,
-      opt_hdr.SizeOfHeaders,
-      opt_hdr.AddressOfEntryPoint,
-      opt_hdr.Subsystem,
-      opt_hdr.DllCharacteristics
-    );
+        opt_hdr.ImageBase,
+        opt_hdr.SizeOfImage,
+        opt_hdr.SizeOfHeaders,
+        opt_hdr.AddressOfEntryPoint,
+        opt_hdr.Subsystem,
+        opt_hdr.DllCharacteristics);
   }
 
   @override
-  List<Section> get sections => _sections.isEmpty ? _parseSectionImpl(_buffer, dos_header.e_lfanew, nt_headers.FileHeader.SizeOfOptionalHeader, nt_headers.FileHeader.NumberOfSections, _sections) : _sections;
+  List<Section> get sections => _sections.isEmpty
+      ? _parseSectionImpl(
+          _buffer,
+          dos_header.e_lfanew,
+          nt_headers.FileHeader.SizeOfOptionalHeader,
+          nt_headers.FileHeader.NumberOfSections,
+          _sections)
+      : _sections;
 
   @override
   List<Export> get exports => throw UnimplementedError();
 
   @override
- List<Import> get imports => throw UnimplementedError();
+  List<Import> get imports => throw UnimplementedError();
 }
 
 PeFileBase parse(dynamic file) {

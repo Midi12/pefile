@@ -13,7 +13,7 @@ void test_pe<T extends pefile.PeFileBase>(String path) {
   expect(pe.header_data.entry_point_rva, isPositive);
 
   expect(pe.sections, isPositive);
-  for(var section in pe.sections) {
+  for (var section in pe.sections) {
     expect(section.name, isNotNull);
     expect(section.name, isNotEmpty);
     expect(section.virtual_address, isPositive);
@@ -25,8 +25,10 @@ void main() {
   group('A group of tests', () {
     setUp(() {});
 
-    test('Test 32 bit', () => test_pe<pefile.PeFile32>('C:\\Windows\\SysWOW64\\notepad.exe'));
+    test('Test 32 bit',
+        () => test_pe<pefile.PeFile32>('C:\\Windows\\SysWOW64\\notepad.exe'));
 
-    test('Test 64 bit', () => test_pe<pefile.PeFile64>('C:\\Windows\\System32\\notepad.exe'));
+    test('Test 64 bit',
+        () => test_pe<pefile.PeFile64>('C:\\Windows\\System32\\notepad.exe'));
   });
 }

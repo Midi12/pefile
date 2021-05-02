@@ -1,22 +1,20 @@
-A library for Dart developers.
+# pefile
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+A Dart library to parse Portable Executable (PE) format
 
 ## Usage
 
 A simple usage example:
 
 ```dart
-import 'package:pefile/pefile.dart';
+var pe = pefile.parse('C:\\Windows\\System32\\notepad.exe');
+print('Is 64bit ? ${pe.is64bit}');
 
-main() {
-  var awesome = new Awesome();
+var dos_hdr = pe.dos_header;
+print('DOS magic ${dos_hdr.e_magic}');
+print('Entry point ${pe.header_data.entry_point_rva.toRadixString(16)}h');
+
+for(var section in pe.sections) {
+  print('Section ${section.name}\taddress ${section.virtual_address.toRadixString(16)}h\tsize ${section.virtual_size.toRadixString(16)}h');
 }
 ```
-
-## Features and bugs
-
-Please file feature requests and bugs at the [issue tracker][tracker].
-
-[tracker]: http://example.com/issues/replaceme

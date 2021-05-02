@@ -20,17 +20,23 @@ const int IMAGE_SCN_TYPE_NO_PAD = 0x00000008; // Reserved.
 const int IMAGE_SCN_TYPE_COPY = 0x00000010; // Reserved.
 
 const int IMAGE_SCN_CNT_CODE = 0x00000020; // Section contains code.
-const int IMAGE_SCN_CNT_INITIALIZED_DATA = 0x00000040; // Section contains initialized data.
-const int IMAGE_SCN_CNT_UNINITIALIZED_DATA = 0x00000080; // Section contains uninitialized data.
+const int IMAGE_SCN_CNT_INITIALIZED_DATA =
+    0x00000040; // Section contains initialized data.
+const int IMAGE_SCN_CNT_UNINITIALIZED_DATA =
+    0x00000080; // Section contains uninitialized data.
 
 const int IMAGE_SCN_LNK_OTHER = 0x00000100; // Reserved.
-const int IMAGE_SCN_LNK_INFO = 0x00000200; // Section contains comments or some other type of information.
+const int IMAGE_SCN_LNK_INFO =
+    0x00000200; // Section contains comments or some other type of information.
 const int IMAGE_SCN_TYPE_OVER = 0x00000400; // Reserved.
-const int IMAGE_SCN_LNK_REMOVE = 0x00000800; // Section contents will not become part of image.
+const int IMAGE_SCN_LNK_REMOVE =
+    0x00000800; // Section contents will not become part of image.
 const int IMAGE_SCN_LNK_COMDAT = 0x00001000; // Section contents comdat.
 const int IMAGE_SCN_RESERVED = 0x00002000; // Reserved.
-const int IMAGE_SCN_NO_DEFER_SPEC_EXC = 0x00004000; // Reset speculative exceptions handling bits in the TLB entries for this section.
-const int IMAGE_SCN_GPREL = 0x00008000; // Section content can be accessed relative to GP
+const int IMAGE_SCN_NO_DEFER_SPEC_EXC =
+    0x00004000; // Reset speculative exceptions handling bits in the TLB entries for this section.
+const int IMAGE_SCN_GPREL =
+    0x00008000; // Section content can be accessed relative to GP
 const int IMAGE_SCN_MEM_FARDATA = 0x00008000;
 const int IMAGE_SCN_MEM_PURGEABLE = 0x00020000;
 const int IMAGE_SCN_MEM_16BIT = 0x00020000;
@@ -41,7 +47,8 @@ const int IMAGE_SCN_ALIGN_1BYTES = 0x00100000;
 const int IMAGE_SCN_ALIGN_2BYTES = 0x00200000;
 const int IMAGE_SCN_ALIGN_4BYTES = 0x00300000;
 const int IMAGE_SCN_ALIGN_8BYTES = 0x00400000;
-const int IMAGE_SCN_ALIGN_16BYTES = 0x00500000; // Default alignment if no others are specified.
+const int IMAGE_SCN_ALIGN_16BYTES =
+    0x00500000; // Default alignment if no others are specified.
 const int IMAGE_SCN_ALIGN_32BYTES = 0x00600000;
 const int IMAGE_SCN_ALIGN_64BYTES = 0x00700000;
 const int IMAGE_SCN_ALIGN_128BYTES = 0x00800000;
@@ -53,7 +60,8 @@ const int IMAGE_SCN_ALIGN_4096BYTES = 0x00D00000;
 const int IMAGE_SCN_ALIGN_8192BYTES = 0x00E00000;
 const int IMAGE_SCN_ALIGN_MASK = 0x00F00000;
 
-const int IMAGE_SCN_LNK_NRELOC_OVFL = 0x01000000; // Section contains extended relocations.
+const int IMAGE_SCN_LNK_NRELOC_OVFL =
+    0x01000000; // Section contains extended relocations.
 const int IMAGE_SCN_MEM_DISCARDABLE = 0x02000000; // Section can be discarded.
 const int IMAGE_SCN_MEM_NOT_CACHED = 0x04000000; // Section is not cachable.
 const int IMAGE_SCN_MEM_NOT_PAGED = 0x08000000; // Section is not pageable.
