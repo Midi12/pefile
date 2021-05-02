@@ -18,3 +18,7 @@ for(var section in pe.sections) {
   print('Section ${section.name}\taddress ${section.virtual_address.toRadixString(16)}h\tsize ${section.virtual_size.toRadixString(16)}h');
 }
 ```
+
+Todos:
+* Add export directory parsing
+* Add import directory parsing
