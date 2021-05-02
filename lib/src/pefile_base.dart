@@ -22,24 +22,6 @@ class PeFileException implements Exception {
   String toString() => 'PeFileException: $_message';
 }
 
-class HeaderData {
-  final int _image_base;
-  final int _image_size;
-  final int _header_size;
-  final int _entry_point_rva;
-  final int _subsystem;
-  final int _dll_characteristics;
-
-  HeaderData(this._image_base, this._image_size, this._header_size, this._entry_point_rva, this._subsystem, this._dll_characteristics);
-
-  int get image_base => _image_base;
-  int get image_size => _image_size;
-  int get header_size => _header_size;
-  int get entry_point_rva => _entry_point_rva;
-  int get subsystem => _subsystem;
-  int get dll_characteristics => _dll_characteristics;
-}
-
 class Section {
   final String _name;
   final int _virtual_size;
@@ -120,7 +102,6 @@ class PeFileBase implements IDisposable {
   }
 
   Struct get nt_headers => throw UnimplementedError();
-  HeaderData get header_data => throw UnimplementedError();
 
   List<Section> get sections => _sections;
   List<Export> get exports => _exports;
@@ -160,20 +141,6 @@ class PeFile32 extends PeFileBase {
   }
 
   @override
-  HeaderData get header_data {
-    var opt_hdr = nt_headers.OptionalHeader;
-
-    return HeaderData(
-      opt_hdr.ImageBase,
-      opt_hdr.SizeOfImage,
-      opt_hdr.SizeOfHeaders,
-      opt_hdr.AddressOfEntryPoint,
-      opt_hdr.Subsystem,
-      opt_hdr.DllCharacteristics
-    );
-  }
-
-  @override
   List<Section> get sections => _sections.isEmpty ? _parseSectionImpl(_buffer, dos_header.e_lfanew, nt_headers.FileHeader.SizeOfOptionalHeader, nt_headers.FileHeader.NumberOfSections, _sections) : _sections;
 
   @override
@@ -195,20 +162,6 @@ class PeFile64 extends PeFileBase {
     }
 
     return pNtHdrs.ref;
-  }
-
-  @override
-  HeaderData get header_data {
-    var opt_hdr = nt_headers.OptionalHeader;
-
-    return HeaderData(
-      opt_hdr.ImageBase,
-      opt_hdr.SizeOfImage,
-      opt_hdr.SizeOfHeaders,
-      opt_hdr.AddressOfEntryPoint,
-      opt_hdr.Subsystem,
-      opt_hdr.DllCharacteristics
-    );
   }
 
   @override
