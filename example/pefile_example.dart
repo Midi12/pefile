@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:pefile/pefile.dart' as pefile;
-import 'package:pefile/src/structs/image_dos_header.dart';
 
 Future<void> main() async {
-  var pe32 = pefile.parse('example32.exe') as pefile.PeFile32;
+  var pe64 = pefile.parse('C:\\Windows\\System32\\notepad.exe') as pefile.PeFile64;
 
-  var dos_hdr = pe32.dos_header();
+  var dos_hdr = pe64.dos_header;
   print(dos_hdr.e_magic);
 }

@@ -4,6 +4,9 @@ import 'image_data_directory.dart';
 
 const int IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16;
 
+const int IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10b;
+const int IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20b;
+
 class IMAGE_OPTIONAL_HEADER32 extends Struct {
   @Uint16() external int Magic;
   @Uint8() external int MajorLinkerVersion;
@@ -35,7 +38,7 @@ class IMAGE_OPTIONAL_HEADER32 extends Struct {
   @Uint32() external int SizeOfHeapCommit;
   @Uint32() external int LoaderFlags;
   @Uint32() external int NumberOfRvaAndSizes;
-  Pointer<IMAGE_DATA_DIRECTORY> DataDirectory; // TODO : change to inline array when available in stable branch (size = IMAGE_NUMBEROF_DIRECTORY_ENTRIES)
+  external Pointer<IMAGE_DATA_DIRECTORY> DataDirectory; // TODO : change to inline array when available in stable branch (size = IMAGE_NUMBEROF_DIRECTORY_ENTRIES)
 }
 
 class IMAGE_OPTIONAL_HEADER64 extends Struct {
@@ -68,5 +71,5 @@ class IMAGE_OPTIONAL_HEADER64 extends Struct {
   @Uint64() external int SizeOfHeapCommit;
   @Uint32() external int LoaderFlags;
   @Uint32() external int NumberOfRvaAndSizes;
-  Pointer<IMAGE_DATA_DIRECTORY> DataDirectory; // TODO : change to inline array when available in stable branch (size = IMAGE_NUMBEROF_DIRECTORY_ENTRIES)
+  external Pointer<IMAGE_DATA_DIRECTORY> DataDirectory; // TODO : change to inline array when available in stable branch (size = IMAGE_NUMBEROF_DIRECTORY_ENTRIES)
 }
