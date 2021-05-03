@@ -18,6 +18,7 @@ void test_pe<T extends pefile.PeFileBase>(String path) {
     expect(section.name, isNotEmpty);
     expect(section.virtual_address, isPositive);
     expect(section.virtual_size, isPositive);
+    expect(pe.getSectionData(section).length, section.size_of_raw_data);
   }
 }
 

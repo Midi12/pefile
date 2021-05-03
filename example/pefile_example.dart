@@ -11,5 +11,8 @@ Future<void> main() async {
   for (var section in pe.sections) {
     print(
         'Section ${section.name}\taddress ${section.virtual_address.toRadixString(16)}h\tsize ${section.virtual_size.toRadixString(16)}h');
+
+    print(
+        'First 16 bytes : ${pe.getSectionData(section).sublist(0, 16).map((e) => e.toRadixString(16).padLeft(2, '0')).join(' ')}');
   }
 }

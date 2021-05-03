@@ -69,6 +69,7 @@ class Section {
       rva <
           (_virtual_address +
               (_virtual_size == 0 ? _size_of_raw_data : _virtual_size));
+
   bool containsFileOffset(int file_offset) =>
       file_offset >= _pointer_to_raw_data &&
       file_offset <
@@ -144,6 +145,7 @@ class PeFileBase implements IDisposable {
   int rvaToFileOffset(int rva) {
     var section = _sections.firstWhere((section) => section.containsRva(rva),
         orElse: () => throw PeFileException('No section contains rva : $rva'));
+
     return (rva - section.virtual_address) + section.pointer_to_raw_data;
   }
 
@@ -152,9 +154,14 @@ class PeFileBase implements IDisposable {
         (section) => section.containsFileOffset(file_offset),
         orElse: () => throw PeFileException(
             'No section contains file offset : $file_offset'));
+
     return (file_offset + section.virtual_address) -
         section.pointer_to_raw_data;
   }
+
+  Uint8List getSectionData(Section section) => _buffer
+      .elementAt(section._pointer_to_raw_data)
+      .asTypedList(section._size_of_raw_data);
 }
 
 List<Section> _parseSectionImpl(Pointer<Uint8> buffer, int nt_hdr_offset,
